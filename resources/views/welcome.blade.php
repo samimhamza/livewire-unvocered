@@ -16,14 +16,9 @@
     @livewire(App\Livewire\Counter::class)
     {{-- <livewire:counter />
 
-    @livewireScripts --}}
+        @livewireScripts --}}
 </body>
 
-<script>
-    document.querySelectorAll('[wire\\:snapshot]').forEach(el => {
-        let snapshot = JSON.parse(el.getAttribute('wire:snapshot'));
-        console.log(snapshot);
-    });
-</script>
+<script src="/livewire.js"></script>
 
 </html>
