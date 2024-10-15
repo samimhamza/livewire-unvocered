@@ -12,29 +12,11 @@
 
 <body>
 
-    {!! livewire(App\Livewire\Counter2::class) !!}
+    {{-- {!! (new App\Livewire)->initialRender(App\Livewire\Counter2::class) !!} --}}
+    @livewire(App\Livewire\Counter2::class)
     {{-- <livewire:counter />
 
     @livewireScripts --}}
 </body>
 
 </html>
-
-<?php
-function livewire($class)
-{
-    $component = new $class();
-
-    return Blade::render($component->render(), getProperties($component));
-}
-
-function getProperties($component)
-{
-    $properties = [];
-    $reflectedProperties = (new ReflectionClass($component))->getProperties(ReflectionProperty::IS_PUBLIC);
-
-    foreach ($reflectedProperties as $property) {
-        $properties[$property->getName()] = $property->getValue($component);
-    }
-    return $properties;
-}
