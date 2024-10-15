@@ -4,7 +4,7 @@ document.querySelectorAll("[wire\\:snapshot]").forEach((el) => {
     initWireClick(el);
 });
 
-function initWireClick(el, snapshot) {
+function initWireClick(el) {
     el.addEventListener("click", (e) => {
         if (!e.target.hasAttribute("wire:click")) return;
 
