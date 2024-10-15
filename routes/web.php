@@ -9,5 +9,5 @@ Route::get('/', function () {
 
 
 Blade::directive('livewire', function ($expression) {
-    return "<?php echo (new App\Livewire)->initialRender($expression); ?>";
+    return "<?php echo (new App\Livewire)->initialRender({$expression}); ?>";
 });

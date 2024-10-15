@@ -13,10 +13,17 @@
 <body>
 
     {{-- {!! (new App\Livewire)->initialRender(App\Livewire\Counter2::class) !!} --}}
-    @livewire(App\Livewire\Counter2::class)
+    @livewire(App\Livewire\Counter::class)
     {{-- <livewire:counter />
 
     @livewireScripts --}}
 </body>
+
+<script>
+    document.querySelectorAll('[wire\\:snapshot]').forEach(el => {
+        let snapshot = JSON.parse(el.getAttribute('wire:snapshot'));
+        console.log(snapshot);
+    });
+</script>
 
 </html>

@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Counter extends Component
+class Counter
 {
     public $count = 0;
 
@@ -12,9 +12,13 @@ class Counter extends Component
     {
         $this->count++;
     }
-
     public function render()
     {
-        return view('livewire.counter');
+        return <<<'HTML'
+            <div class="counter">
+                <span>{{ $count }}</span>
+                <button wire:click="increment">+</button>
+            </div>
+        HTML;
     }
 }
