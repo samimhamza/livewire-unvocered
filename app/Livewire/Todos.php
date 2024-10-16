@@ -8,11 +8,11 @@ class Todos
 
     public $draft = '';
 
-    public $todos = [];
+    public $todos;
 
     public function mount()
     {
-        $this->todos = ['One Todo', 'Two Todo'];
+        $this->todos = Collect(['One Todo', 'Two Todo']);
     }
 
     public function updatedDraft()
@@ -22,7 +22,7 @@ class Todos
 
     public function addTodo()
     {
-        $this->todos[] = $this->draft;
+        $this->todos->push($this->draft);
 
         $this->draft = '';
     }
