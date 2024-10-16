@@ -8,10 +8,17 @@ class Todos
 
     public $draft = '';
 
-    public $todos = [
-        'One Todo',
-        'Two Todo',
-    ];
+    public $todos = [];
+
+    public function mount()
+    {
+        $this->todos = ['One Todo', 'Two Todo'];
+    }
+
+    public function updatedDraft()
+    {
+        $this->draft = strtoupper($this->draft);
+    }
 
     public function addTodo()
     {
