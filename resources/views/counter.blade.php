@@ -19,7 +19,7 @@
 <body>
 
 
-    @livewire(App\Livewire\Todos::class)
+    @livewire(App\Livewire\Counter::class)
 
 
     {{-- {!! (new App\Livewire)->initialRender(App\Livewire\Counter2::class) !!} --}}
