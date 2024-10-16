@@ -8,6 +8,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/counter', function () {
+    return view('counter');
+});
+
 Route::post('/livewire', function () {
     $component = (new Livewire)->fromSnapshot(request('snapshot'));
 
