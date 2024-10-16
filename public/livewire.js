@@ -33,6 +33,6 @@ function sendRequest(el, addToPayload) {
 
             el.__livewire = snapshot;
 
-            el.innerHTML = html;
+            Alpine.morph(el.firstElementChild, html);
         });
 }
