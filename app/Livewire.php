@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use ReflectionClass;
@@ -32,6 +33,9 @@ class Livewire
 
     function fromSnapshot($snapshot)
     {
+        $this->verifyChecksum($snapshot);
+
+
         $class = $snapshot['class'];
         $data = $snapshot['data'];
         $meta = $snapshot['meta'];
@@ -43,6 +47,16 @@ class Livewire
         $this->setProperties($component, $properties);
 
         return $component;
+    }
+
+    function verifyChecksum($snapshot)
+    {
+        $checksum = $snapshot['checksum'];
+        unset($snapshot['checksum']);
+
+        if ($checksum !== $this->generateChecksum($snapshot)) {
+            throw new Exception('Hey stop hacking me!');
+        }
     }
 
     function toSnapshot($component)
@@ -57,7 +71,14 @@ class Livewire
             'meta' => $meta,
         ];
 
+        $snapshot['checksum'] = $this->generateChecksum($snapshot);
+
         return [$html, $snapshot];
+    }
+
+    function generateChecksum($snapshot)
+    {
+        return md5(json_encode($snapshot));
     }
 
     function dehydrateProperties($properties)
