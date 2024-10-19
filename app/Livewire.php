@@ -4,14 +4,13 @@ namespace App;
 
 use Exception;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Blade;
 use ReflectionClass;
 use ReflectionProperty;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
 class Livewire
 {
-
     function initialRender($class)
     {
         $component = new $class;
@@ -25,43 +24,18 @@ class Livewire
         $snapshotAttribute = htmlentities(json_encode($snapshot));
 
         return <<<HTML
-                    <div wire:snapshot="{$snapshotAttribute}">
-                        {$html}
-                    </div>  
-                HTML;
-    }
-
-    function fromSnapshot($snapshot)
-    {
-        $this->verifyChecksum($snapshot);
-
-
-        $class = $snapshot['class'];
-        $data = $snapshot['data'];
-        $meta = $snapshot['meta'];
-
-        $component = new $class;
-
-        $properties = $this->hydrateProperties($data, $meta);
-
-        $this->setProperties($component, $properties);
-
-        return $component;
-    }
-
-    function verifyChecksum($snapshot)
-    {
-        $checksum = $snapshot['checksum'];
-        unset($snapshot['checksum']);
-
-        if ($checksum !== $this->generateChecksum($snapshot)) {
-            throw new Exception('Hey stop hacking me!');
-        }
+            <div wire:snapshot="{$snapshotAttribute}">
+                {$html}
+            </div>
+        HTML;
     }
 
     function toSnapshot($component)
     {
-        $html = Blade::render($component->render(), $properties = $this->getProperties($component));
+        $html = Blade::render(
+            $component->render(),
+            $properties = $this->getProperties($component)
+        );
 
         [$data, $meta] = $this->dehydrateProperties($properties);
 
@@ -97,12 +71,40 @@ class Livewire
         return [$data, $meta];
     }
 
+    function fromSnapshot($snapshot)
+    {
+        // $this->verifyChecksum($snapshot);
+
+        $class = $snapshot['class'];
+        $data = $snapshot['data'];
+        $meta = $snapshot['meta'];
+
+        $component = new $class;
+
+        $properties = $this->hydrateProperties($data, $meta);
+
+        $this->setProperties($component, $properties);
+
+        return $component;
+    }
+
+    function verifyChecksum($snapshot)
+    {
+        $checksum = $snapshot['checksum'];
+
+        unset($snapshot['checksum']);
+
+        if ($checksum !== $this->generateChecksum($snapshot)) {
+            throw new Exception('Hey! Stop hacking me!');
+        }
+    }
+
     function hydrateProperties($data, $meta)
     {
         $properties = [];
 
         foreach ($data as $key => $value) {
-            if (isset($meta[$key]) && $meta[$key] == 'collection') {
+            if (isset($meta[$key]) && $meta[$key] === 'collection') {
                 $value = collect($value);
             }
 
@@ -122,11 +124,13 @@ class Livewire
     function getProperties($component)
     {
         $properties = [];
+
         $reflectedProperties = (new ReflectionClass($component))->getProperties(ReflectionProperty::IS_PUBLIC);
 
         foreach ($reflectedProperties as $property) {
             $properties[$property->getName()] = $property->getValue($component);
         }
+
         return $properties;
     }
 

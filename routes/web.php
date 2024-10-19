@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ Route::post('/livewire', function () {
         'html' => $html,
         'snapshot' => $snapshot
     ];
-});
+})->withoutMiddleware([ConvertEmptyStringsToNull::class]);
 
 Blade::directive('livewire', function ($expression) {
     return "<?php echo (new App\Livewire)->initialRender({$expression}); ?>";
