@@ -63,3 +63,57 @@ function sendRequest(el, addToPayload) {
             updateWireModelInputs(el);
         });
 }
+function morph(from, to) {
+    if (typeof to === "string") {
+        let temp = document.createElement("div");
+        temp.innerHTML = to;
+        to = temp.firstElementChild;
+    }
+
+    if (from.tagName !== to.tagName) {
+        from.replaceWith(to.cloneNode(true));
+        return;
+    }
+    patchText(from, to);
+    patchAttribute(from, to);
+
+    patchChildren(from, to);
+}
+
+function patchChildren(from, to) {
+    let childFrom = from.firstElementChild;
+    let childTo = to.firstElementChild;
+
+    while (childTo) {
+        if (!childFrom) {
+            childFrom = from.append(childTo.cloneNode(true));
+        } else {
+            morph(childFrom, childTo);
+            childFrom = childFrom.nextElementSibling;
+        }
+        childTo = childTo.nextElementSibling;
+    }
+
+    while (childFrom) {
+        let toRemove = childFrom;
+        childFrom = childFrom.nextElementSibling;
+        toRemove.remove();
+    }
+}
+
+function patchAttribute(from, to) {
+    for (const { name, value } of to.attributes) {
+        from.setAttribute(name, value);
+    }
+
+    for (const { name, value } of from.attributes) {
+        if (!to.hasAttribute(name, value)) {
+            from.removeAttribute(name);
+        }
+    }
+}
+
+function patchText(from, to) {
+    if (to.children.length > 0) return;
+    from.textContent = to.textContent;
+}
